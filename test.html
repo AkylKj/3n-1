@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 2D визуализации 3n+1</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* Кастомные цвета */
+        :root {
+            --primary: #3b82f6;
+            --secondary: #64748b;
+            --background: #1a1a1a;
+            --surface: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        
+        .bg-surface {
+            background-color: var(--surface);
+        }
+        
+        .text-primary {
+            color: var(--primary);
+        }
+        
+        .text-secondary {
+            color: var(--secondary);
+        }
+        
+        .text-success {
+            color: var(--success);
+        }
+        
+        .text-warning {
+            color: var(--warning);
+        }
+        
+        .text-error {
+            color: var(--error);
+        }
+        
+        .border-secondary\/20 {
+            border-color: rgba(100, 116, 139, 0.2);
+        }
+        
+        .bg-primary {
+            background-color: var(--primary);
+        }
+        
+        .bg-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .hover\:bg-primary\/90:hover {
+            background-color: rgba(59, 130, 246, 0.9);
+        }
+        
+        .hover\:bg-secondary\/90:hover {
+            background-color: rgba(100, 116, 139, 0.9);
+        }
+        
+        .focus\:ring-primary:focus {
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+        
+        .focus\:ring-secondary:focus {
+            box-shadow: 0 0 0 2px var(--secondary);
+        }
+        
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .border-b-2 {
+            border-bottom-width: 2px;
+        }
+        
+        .border-primary {
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Тест 2D визуализации гипотезы 3n+1</h1>
+        
+        <!-- Input Panel -->
+        <div class="bg-surface rounded-lg p-6 border border-secondary/20 mb-8">
+            <h2 class="text-lg font-semibold mb-4">Введите начальное число</h2>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <input 
+                        type="number" 
+                        id="numberInput" 
+                        placeholder="Например: 27" 
+                        class="w-full px-4 py-3 bg-background border border-secondary/30 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                        min="1"
+                        max="1000000"
+                        value="27"
+                    >
+                </div>
+                <div class="flex gap-2">
+                    <button 
+                        id="calculateBtn" 
+                        class="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+                    >
+                        Вычислить
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Panel -->
+        <div class="bg-surface rounded-lg p-6 border border-secondary/20 mb-8">
+            <h2 class="text-lg font-semibold mb-4">Статистика</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-background rounded-lg p-4 border border-secondary/20">
+                    <h3 class="text-sm font-medium text-secondary mb-1">Длина последовательности</h3>
+                    <p class="text-2xl font-bold text-primary" id="sequenceLength">-</p>
+                </div>
+                <div class="bg-background rounded-lg p-4 border border-secondary/20">
+                    <h3 class="text-sm font-medium text-secondary mb-1">Максимальное значение</h3>
+                    <p class="text-2xl font-bold text-warning" id="maxValue">-</p>
+                </div>
+                <div class="bg-background rounded-lg p-4 border border-secondary/20">
+                    <h3 class="text-sm font-medium text-secondary mb-1">Количество шагов</h3>
+                    <p class="text-2xl font-bold text-success" id="stepCount">-</p>
+                </div>
+                <div class="bg-background rounded-lg p-4 border border-secondary/20">
+                    <h3 class="text-sm font-medium text-secondary mb-1">Статус</h3>
+                    <p class="text-2xl font-bold text-error" id="status">-</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2D Chart -->
+        <div class="bg-surface rounded-lg p-6 border border-secondary/20">
+            <h2 class="text-lg font-semibold mb-4">2D Визуализация</h2>
+            <div class="relative">
+                <canvas id="chart2d" class="w-full h-80"></canvas>
+                <div id="chart2dLoading" class="absolute inset-0 flex items-center justify-center bg-surface/80 hidden">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+            </div>
+            <!-- Chart Controls -->
+            <div class="flex gap-2 mt-4" id="chartControls">
+                <button class="px-3 py-1 bg-primary text-white rounded text-sm hover:bg-primary/90" data-type="line">Линейный</button>
+                <button class="px-3 py-1 bg-secondary text-white rounded text-sm hover:bg-secondary/90" data-type="bar">Столбчатый</button>
+                <button class="px-3 py-1 bg-secondary text-white rounded text-sm hover:bg-secondary/90" data-type="scatter">Точечный</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Простая реализация алгоритма 3n+1
+        class CollatzAlgorithm {
+            static generateSequence(startNumber) {
+                if (!Number.isInteger(startNumber) || startNumber < 1) {
+                    throw new Error('Начальное число должно быть положительным целым числом');
+                }
+
+                const sequence = [startNumber];
+                let current = startNumber;
+                const maxIterations = 1000000;
+                let iterations = 0;
+
+                while (current !== 1 && iterations < maxIterations) {
+                    if (current % 2 === 0) {
+                        current = current / 2;
+                    } else {
+                        current = 3 * current + 1;
+                    }
+                    
+                    sequence.push(current);
+                    iterations++;
+                }
+
+                return sequence;
+            }
+
+            static calculateStatistics(sequence) {
+                return {
+                    length: sequence.length,
+                    maxValue: Math.max(...sequence),
+                    minValue: Math.min(...sequence),
+                    steps: sequence.length - 1,
+                    hasReachedOne: sequence[sequence.length - 1] === 1
+                };
+            }
+        }
+
+        // Простая реализация 2D визуализации
+        class SimpleVisualization2D {
+            constructor() {
+                this.chart = null;
+                this.chartType = 'line';
+                this.container = document.getElementById('chart2d');
+            }
+
+            init() {
+                this.createChart();
+                this.setupControls();
+            }
+
+            createChart() {
+                const ctx = this.container.getContext('2d');
+                
+                if (this.chart) {
+                    this.chart.destroy();
+                }
+
+                this.chart = new Chart(ctx, {
+                    type: this.chartType,
+                    data: {
+                        labels: [],
+                        datasets: []
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Последовательность 3n+1',
+                                color: '#ffffff',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            },
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: '#ffffff',
+                                    usePointStyle: true,
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#ffffff',
+                                bodyColor: '#ffffff',
+                                borderColor: '#3b82f6',
+                                borderWidth: 1,
+                                cornerRadius: 8,
+                                displayColors: true,
+                                callbacks: {
+                                    title: function(context) {
+                                        return `Шаг ${context[0].dataIndex}`;
+                                    },
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.parsed.y}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Шаг',
+                                    color: '#ffffff'
+                                },
+                                ticks: {
+                                    color: '#a1a1aa',
+                                    maxTicksLimit: 20
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Значение',
+                                    color: '#ffffff'
+                                },
+                                ticks: {
+                                    color: '#a1a1aa'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            update(sequenceData) {
+                const labels = Array.from({ length: sequenceData.sequence.length }, (_, i) => i);
+                
+                this.chart.data.labels = labels;
+                this.chart.data.datasets = [{
+                    label: `Число ${sequenceData.startNumber}`,
+                    data: sequenceData.sequence,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: '#3b82f6',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2
+                }];
+                
+                this.chart.update('active');
+            }
+
+            changeChartType(type) {
+                this.chartType = type;
+                this.createChart();
+            }
+
+            setupControls() {
+                const controls = document.getElementById('chartControls');
+                controls.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'BUTTON') {
+                        const type = e.target.dataset.type;
+                        this.changeChartType(type);
+                        
+                        // Обновляем активную кнопку
+                        controls.querySelectorAll('button').forEach(btn => {
+                            btn.className = btn.className.replace('bg-primary', 'bg-secondary');
+                        });
+                        e.target.className = e.target.className.replace('bg-secondary', 'bg-primary');
+                    }
+                });
+            }
+        }
+
+        // Инициализация приложения
+        let visualization2D;
+        let currentSequenceData = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            visualization2D = new SimpleVisualization2D();
+            visualization2D.init();
+
+            // Обработчик кнопки "Вычислить"
+            document.getElementById('calculateBtn').addEventListener('click', handleCalculate);
+            
+            // Обработчик Enter в поле ввода
+            document.getElementById('numberInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleCalculate();
+                }
+            });
+
+            // Загружаем пример
+            handleCalculate();
+        });
+
+        function handleCalculate() {
+            const input = document.getElementById('numberInput');
+            const number = parseInt(input.value);
+
+            if (!number || number < 1) {
+                alert('Пожалуйста, введите положительное число');
+                return;
+            }
+
+            if (number > 1000000) {
+                alert('Число слишком большое. Максимум: 1,000,000');
+                return;
+            }
+
+            try {
+                showLoading(true);
+                
+                // Генерация последовательности
+                const sequence = CollatzAlgorithm.generateSequence(number);
+                const statistics = CollatzAlgorithm.calculateStatistics(sequence);
+                
+                currentSequenceData = {
+                    startNumber: number,
+                    sequence: sequence,
+                    statistics: statistics
+                };
+
+                // Обновление UI
+                updateUI(currentSequenceData);
+                
+                // Обновление визуализации
+                visualization2D.update(currentSequenceData);
+                
+                showLoading(false);
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при вычислении последовательности');
+                showLoading(false);
+            }
+        }
+
+        function updateUI(sequenceData) {
+            document.getElementById('sequenceLength').textContent = sequenceData.statistics.length;
+            document.getElementById('maxValue').textContent = sequenceData.statistics.maxValue;
+            document.getElementById('stepCount').textContent = sequenceData.statistics.steps;
+            document.getElementById('status').textContent = sequenceData.statistics.hasReachedOne ? 'Достигнуто 1' : 'Не достигнуто';
+        }
+
+        function showLoading(show) {
+            const loadingElement = document.getElementById('chart2dLoading');
+            loadingElement.classList.toggle('hidden', !show);
+        }
+    </script>
+</body>
+</html> 

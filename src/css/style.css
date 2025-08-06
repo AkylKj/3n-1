@@ -1,0 +1,701 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Base Styles */
+@layer base {
+    * {
+        box-sizing: border-box;
+    }
+    
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    body {
+        font-family: 'Inter', system-ui, sans-serif;
+        line-height: 1.6;
+        background-color: #1a1a1a;
+        color: #ffffff;
+        transition: background-color 0.6s ease, color 0.6s ease;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #2d2d2d;
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #64748b;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #3b82f6;
+    }
+}
+
+/* Custom Component Styles */
+@layer components {
+    .stat-card {
+        @apply bg-surface rounded-lg p-4 border border-secondary/20 transition-all duration-500 ease-smooth hover:border-secondary/40 hover:shadow-lg hover:scale-[1.02] hover:bg-surface/80;
+        animation: fadeIn 0.6s ease-in-out;
+    }
+    
+    .btn-primary {
+        @apply px-6 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all duration-300 ease-smooth focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background hover:shadow-lg hover:scale-105 active:scale-95;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .btn-primary:hover::before {
+        left: 100%;
+    }
+    
+    .btn-secondary {
+        @apply px-6 py-3 bg-secondary hover:bg-secondary/90 text-white font-medium rounded-lg transition-all duration-300 ease-smooth focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 focus:ring-offset-background hover:shadow-lg hover:scale-105 active:scale-95;
+    }
+    
+    .input-field {
+        @apply w-full px-4 py-3 bg-background border border-secondary/30 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 ease-smooth hover:border-secondary/50 focus:bg-background/80;
+    }
+    
+    .card {
+        @apply bg-surface rounded-lg p-6 border border-secondary/20 transition-all duration-500 ease-smooth hover:shadow-lg hover:border-secondary/30;
+        animation: slideUp 0.5s ease-out;
+    }
+    
+    .loading-spinner {
+        @apply animate-spin rounded-full h-8 w-8 border-b-2 border-primary;
+        animation: spin 1s linear infinite, glow 2s ease-in-out infinite alternate;
+    }
+    
+    /* Улучшенные анимации загрузки */
+    .loading-dots {
+        display: inline-flex;
+        gap: 4px;
+    }
+    
+    .loading-dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #3b82f6;
+        animation: loadingDots 1.4s ease-in-out infinite both;
+    }
+    
+    .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0s; }
+    
+    /* Плавные переходы для всех элементов */
+    .transition-smooth {
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .transition-fast {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .transition-slow {
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Микроанимации для интерактивных элементов */
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .hover-glow {
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .hover-glow:hover {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+    
+    /* Анимации для статистических карточек */
+    .stat-card.updated {
+        animation: scaleIn 0.5s ease-out;
+    }
+    
+    .stat-value {
+        transition: all 0.5s ease;
+    }
+    
+    .stat-value.updated {
+        animation: bounceGentle 0.8s ease-in-out;
+        color: #3b82f6;
+    }
+    
+    /* Анимации для графиков */
+    .chart-container {
+        transition: all 0.5s ease;
+        animation: fadeIn 0.6s ease-in-out;
+    }
+    
+    .chart-container:hover {
+        transform: scale(1.01);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Анимации для вкладок */
+    .tab-button {
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .tab-button::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: #3b82f6;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+    
+    .tab-button:hover::before {
+        width: 100%;
+    }
+    
+    .tab-button.active::before {
+        width: 100%;
+    }
+    
+    /* Анимации для панелей */
+    .panel-enter {
+        animation: slideUp 0.5s ease-out;
+    }
+    
+    .panel-exit {
+        animation: slideDown 0.3s ease-in;
+    }
+    
+    /* Эффект мерцания для важных элементов */
+    .shimmer-effect {
+        background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+        background-size: 200% 100%;
+        animation: shimmer 2s linear infinite;
+    }
+    
+    /* Плавающий эффект */
+    .float-effect {
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    /* Эффект пульсации */
+    .pulse-effect {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+}
+
+/* Custom Utility Styles */
+@layer utilities {
+    .text-gradient {
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .bg-gradient {
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    }
+    
+    .shadow-glow {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+    
+    .backdrop-blur {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    
+    /* Улучшенные тени для темной темы */
+    .shadow-dark {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    }
+    
+    .shadow-dark-lg {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Градиентные границы */
+    .border-gradient {
+        border: 2px solid transparent;
+        background: linear-gradient(#1a1a1a, #1a1a1a) padding-box, linear-gradient(135deg, #3b82f6, #8b5cf6) border-box;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.slide-up {
+    animation: slideUp 0.5s ease-out;
+}
+
+.slide-down {
+    animation: slideDown 0.5s ease-out;
+}
+
+.slide-left {
+    animation: slideLeft 0.5s ease-out;
+}
+
+.slide-right {
+    animation: slideRight 0.5s ease-out;
+}
+
+.scale-in {
+    animation: scaleIn 0.5s ease-out;
+}
+
+.scale-out {
+    animation: scaleOut 0.3s ease-in;
+}
+
+.bounce-gentle {
+    animation: bounceGentle 0.8s ease-in-out;
+}
+
+.glow {
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+.float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.shimmer {
+    animation: shimmer 2s linear infinite;
+}
+
+/* Стили для компонента загрузки */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 26, 26, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: all 0.3s ease;
+}
+
+.loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+    color: #ffffff;
+}
+
+.loading-text {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #a1a1aa;
+}
+
+/* Улучшенная темная тема */
+body {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    transition: background-color 0.6s ease, color 0.6s ease;
+}
+
+/* Улучшенные тени для темной темы */
+.shadow-dark {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.shadow-dark-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+}
+
+/* Градиентные границы */
+.border-gradient {
+    border: 2px solid transparent;
+    background: linear-gradient(#1a1a1a, #1a1a1a) padding-box, linear-gradient(135deg, #3b82f6, #8b5cf6) border-box;
+}
+
+/* Улучшенные стили для существующих компонентов */
+.comparison-panel {
+    @apply bg-surface rounded-lg p-6 border border-secondary/20 transition-all duration-500 ease-smooth hover:shadow-lg;
+    animation: slideUp 0.5s ease-out;
+}
+
+.comparison-stat-card {
+    @apply bg-background rounded-lg p-4 border border-secondary/20 transition-all duration-300 ease-smooth;
+}
+
+.comparison-stat-card:hover {
+    @apply border-secondary/40 shadow-lg scale-[1.02];
+}
+
+.pattern-item {
+    @apply bg-background rounded-lg p-3 border border-secondary/20 transition-all duration-300 ease-smooth;
+}
+
+.pattern-item:hover {
+    @apply border-primary/50 shadow-md scale-[1.01];
+}
+
+.anomaly-item {
+    @apply bg-background rounded-lg p-3 border-l-4 transition-all duration-300 ease-smooth;
+}
+
+.anomaly-item.high {
+    @apply border-l-error;
+}
+
+.anomaly-item.medium {
+    @apply border-l-warning;
+}
+
+.anomaly-item.low {
+    @apply border-l-success;
+}
+
+.sequences-table {
+    @apply w-full border-collapse;
+}
+
+.sequences-table th {
+    @apply bg-surface text-left p-3 border-b border-secondary/20 font-medium;
+}
+
+.sequences-table td {
+    @apply p-3 border-b border-secondary/10 transition-colors duration-200;
+}
+
+.sequences-table tr:hover {
+    @apply bg-surface/50;
+}
+
+.pattern-badge {
+    @apply inline-block px-2 py-1 text-xs font-medium rounded-full transition-all duration-200;
+}
+
+.comparison-chart-container {
+    @apply bg-surface rounded-lg p-4 border border-secondary/20 transition-all duration-500 ease-smooth;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.comparison-chart-container:hover {
+    @apply shadow-lg border-secondary/30;
+}
+
+.severity-high {
+    @apply text-error;
+}
+
+.severity-medium {
+    @apply text-warning;
+}
+
+.severity-low {
+    @apply text-success;
+}
+
+/* Улучшенные стили для вкладок */
+.tab-button {
+    @apply px-4 py-2 text-text-secondary hover:text-text-primary transition-all duration-300 ease-smooth relative;
+}
+
+.tab-button:hover {
+    @apply bg-surface/50 rounded-lg;
+}
+
+.tab-button.active {
+    @apply text-primary bg-surface rounded-lg shadow-md;
+}
+
+.tab-button.active:hover {
+    @apply bg-surface/80;
+}
+
+.tab-panel {
+    @apply hidden transition-all duration-500 ease-smooth;
+}
+
+.tab-panel.active {
+    @apply block;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.tab-content {
+    @apply transition-all duration-500 ease-smooth;
+}
+
+.tab-panel.fade-in {
+    animation: tabFadeIn 0.5s ease-in-out;
+}
+
+@keyframes tabFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Улучшенные стили для кнопок */
+.tab-button,
+.btn-primary,
+.btn-secondary {
+    @apply transition-all duration-300 ease-smooth;
+}
+
+.tab-button:hover,
+.btn-primary:hover,
+.btn-secondary:hover {
+    @apply transform scale-105;
+}
+
+.tab-button.active:hover {
+    @apply transform scale-105;
+}
+
+/* Стили для загрузки */
+.chart-loading {
+    @apply flex items-center justify-center p-8 text-text-secondary;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Улучшенные стили для кнопок экспорта */
+.export-btn {
+    @apply px-4 py-2 bg-secondary hover:bg-secondary/90 text-white rounded-lg transition-all duration-300 ease-smooth;
+}
+
+.export-btn:hover {
+    @apply shadow-lg scale-105;
+}
+
+.export-btn:active {
+    @apply scale-95;
+}
+
+/* Улучшенные стили для кнопок полноэкранного режима */
+.fullscreen-btn {
+    @apply p-2 bg-surface hover:bg-surface/80 text-text-secondary hover:text-text-primary rounded-lg transition-all duration-300 ease-smooth;
+}
+
+.fullscreen-btn:hover {
+    @apply shadow-md scale-110;
+}
+
+.fullscreen-btn:active {
+    @apply scale-95;
+}
+
+/* Улучшенные стили для контейнеров графиков */
+.chart-container {
+    @apply bg-surface rounded-lg p-4 border border-secondary/20 transition-all duration-500 ease-smooth;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.chart-container:hover {
+    @apply shadow-lg border-secondary/30;
+}
+
+/* Специальные стили для 3D контейнера */
+#chart3d {
+    @apply bg-surface rounded-lg border border-secondary/20 transition-all duration-500 ease-smooth;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+#chart3d:active {
+    @apply shadow-lg;
+}
+
+/* Стили для кнопок управления 3D */
+#reset3dBtn,
+#fullscreen3dBtn {
+    @apply px-3 py-2 bg-surface hover:bg-surface/80 text-text-secondary hover:text-text-primary rounded-lg transition-all duration-300 ease-smooth;
+}
+
+#reset3dBtn:hover,
+#fullscreen3dBtn:hover {
+    @apply shadow-md scale-105;
+}
+
+/* Стили для информации о 3D графике */
+#chart3dInfo {
+    @apply bg-surface/80 backdrop-blur rounded-lg p-3 border border-secondary/20 transition-all duration-300 ease-smooth;
+    animation: slideUp 0.5s ease-out;
+}
+
+/* Стили для статистики FPS */
+#chart3d .stats {
+    @apply bg-surface/90 backdrop-blur rounded-lg p-2 border border-secondary/20 transition-all duration-300 ease-smooth;
+}
+
+/* Стили для загрузки 3D */
+#chart3dLoading {
+    @apply flex items-center justify-center p-8 text-text-secondary;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+    .chart-container {
+        @apply p-2;
+    }
+    
+    .stat-card {
+        @apply p-3;
+    }
+    
+    .stat-card h3 {
+        @apply text-xs;
+    }
+    
+    .stat-card p {
+        @apply text-lg;
+    }
+}
+
+/* Улучшенная темная тема */
+@media (prefers-color-scheme: dark) {
+    .card {
+        @apply bg-surface border-secondary/20;
+    }
+}
+
+/* Улучшенная доступность */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+}
+
+/* Плавные переходы для всех элементов */
+.transition-all {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-colors {
+    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Стили для состояний загрузки */
+.loading {
+    @apply relative overflow-hidden;
+}
+
+.loading::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent;
+    animation: shimmer 1.5s infinite;
+}
+
+/* Стили для деталей последовательности */
+.sequence-details {
+    @apply space-y-2;
+}
+
+.sequence-number {
+    @apply font-mono text-sm;
+}
+
+.sequence-step {
+    @apply text-text-secondary text-xs transition-colors duration-200;
+}
+
+/* Стили для значений статистики */
+.stat-value {
+    @apply font-bold transition-all duration-500 ease-smooth;
+}
+
+.stat-value.updated {
+    @apply text-primary;
+    animation: bounceGentle 0.8s ease-in-out;
+}
+
+/* Стили для тултипов Chart.js */
+.chartjs-tooltip {
+    @apply bg-surface border border-secondary/20 rounded-lg shadow-lg backdrop-blur;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Адаптивные стили для визуализации */
+@media (max-width: 1024px) {
+    .visualization-grid {
+        @apply grid-cols-1 gap-4;
+    }
+}
+
+@media (min-width: 1025px) {
+    .visualization-grid {
+        @apply grid-cols-2 gap-6;
+    }
+}
+
+/* Адаптивные стили для вкладок */
+@media (max-width: 768px) {
+    .tab-button {
+        @apply px-3 py-2 text-sm;
+    }
+    
+    .tab-button span {
+        @apply hidden;
+    }
+    
+    .tab-button svg {
+        @apply w-5 h-5;
+    }
+}
+
+@media (max-width: 640px) {
+    .tab-button {
+        @apply px-2 py-1;
+    }
+    
+    .tab-button span {
+        @apply hidden;
+    }
+    
+    .tab-button svg {
+        @apply w-4 h-4;
+    }
+} 

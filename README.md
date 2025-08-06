@@ -1,6 +1,6 @@
 # 🧮 3n+1 Hypothesis Visualization
 
-[🇷🇺 Русский](README.ru.md) | [🇺🇸 English](README.md)
+[🇷🇺 Русский](README.ru.md) | [🇺🇸 English](README.md) | [🗺️ Roadmap](roadmap.md)
 
 Interactive web application for visualizing the Collatz conjecture (3n+1) using modern web technologies.
 
@@ -82,7 +82,7 @@ The built files will be in the `dist/` folder.
 ├── package.json
 ├── vite.config.js
 ├── tailwind.config.js
-├── roadmap.md               # Development plan
+├── [roadmap.md](roadmap.md)               # Development plan
 ├── ARCHITECTURE.md          # Project architecture
 └── README.md
 ```
@@ -194,12 +194,6 @@ window.app.visualization3D
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-- [Chart.js](https://www.chartjs.org/) - for 2D visualization
-- [Three.js](https://threejs.org/) - for 3D visualization
-- [Tailwind CSS](https://tailwindcss.com/) - for styling
-- [Vite](https://vitejs.dev/) - for build tool
 
 ## 📞 Support
 

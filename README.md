@@ -201,4 +201,10 @@ If you have questions or suggestions, create an Issue in the repository.
 
 ---
 
+## 💭 Author's Note
+
+> *"This project is made purely for the soul, so its further development will be conducted as it comes"*
+
+---
+
 **Created with ❤️ for mathematics exploration** 
